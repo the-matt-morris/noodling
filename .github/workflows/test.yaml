@@ -26,6 +26,7 @@ jobs:
         if: steps.changed-files-specific.outputs.any_changed == 'true'
         run: |
           echo "One or more files listed above has changed."
+          echo ${{ steps.changed-files-specific.outputs.all_changed_files }}
   
   build:
     runs-on: ubuntu-latest
@@ -33,6 +34,5 @@ jobs:
     steps:
       -
         name: Run step if any of the checkout files changed
-        if: needs.checkout.steps.changed-files-specific.outputs.any_changed == 'true'
         run: |
-          echo ${{ needs.checkout.steps.changed-files-specific.outputs.any_changed }}
+          echo ${{ needs.checkout.steps.changed-files-specific.outputs.all_changed_files }}
