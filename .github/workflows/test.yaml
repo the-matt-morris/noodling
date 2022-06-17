@@ -1,0 +1,39 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  checkout:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  
+      -
+        name: Get specific changed files
+        id: changed-files-specific
+        uses: tj-actions/changed-files@v23
+        with:
+          since_last_remote_commit: "true"
+          files: |  # (directories)
+            Dockerfile
+            requirements.txt
+      - name: Run step if any of the listed files above change
+        if: steps.changed-files-specific.outputs.any_changed == 'true'
+        run: |
+          echo "One or more files listed above has changed."
+  
+  build:
+    runs-on: ubuntu-latest
+    needs: checkout
+    if: needs.checkout.steps.changed-files-specific.outputs.any_changed == 'true'    
+    steps:
+      -
+        name: Run step if any of the checkout files changed
+        run: |
+          echo "One or more files from the checkout job have changed."
