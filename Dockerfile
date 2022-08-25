@@ -1,9 +1,15 @@
-FROM python:3.10.2
+# Pull Python 3.10 image
+FROM python:3.10.6
 
-RUN pip install virtualenv
-RUN virtualenv /noodling
+# Copy necessary app files into container
+WORKDIR /app
+COPY . /app
 
-COPY requirements.txt .
-RUN /noodling/bin/pip install -r requirements.txt
+# Install Python dependencies
+RUN pip install -r app/requirements.txt
 
-# Made a change
+# Expose port
+EXPOSE 8501
+
+ENTRYPOINT [ "streamlit", "run" ]
+CMD ["app.py"]
