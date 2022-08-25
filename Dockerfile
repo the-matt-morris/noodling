@@ -6,7 +6,7 @@ WORKDIR /app
 COPY . /app
 
 # Install Python dependencies
-RUN pip install -r app/requirements.txt
+RUN pip install -r requirements.txt
 
 # Expose port
 EXPOSE 8501
