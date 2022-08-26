@@ -1,0 +1,74 @@
+# This workflow will build the docker image and push to GitHub Container Registry
+
+name: Production Build
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  commit_files:
+    runs-on: ubuntu-latest
+    env:
+      VERSION_FILE: rxy/version.py
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v3    
+      -
+        name: Create Pipfile.lock
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - run: |
+          pip install pipenv
+          pipenv lock
+      -
+        name: Version
+        run: \
+          touch $VERSION_FILE
+          echo "VERSION = '${{ github.ref_name }}'" > $VERSION_FILE
+      -
+        name: Commit files
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: ":rocket: Add Pipfile.lock, version.py for release `${{ github.ref_name }}` [ci skip]"
+          branch: ${{ github.ref_name }}
+          add_options: '--force'
+          create_branch: false
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v3
+      -
+        name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          # list of Docker images to use as base name for tags
+          images: ghcr.io/rsginc/rxy
+          # generate Docker tags based on the following events/attributes
+          tags: |
+            type=ref,event=branch
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      -
+        name: Login to GHCR
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}

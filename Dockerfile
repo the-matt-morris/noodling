@@ -8,6 +8,8 @@ COPY . /app
 # Install Python dependencies
 RUN pip install -r requirements.txt
 
+RUN if [ -f project/version.py ]; then pip install -e /; fi
+
 # Expose port
 EXPOSE 8501
 
