@@ -39,7 +39,6 @@ jobs:
           file_pattern: Pipfile.lock ${{ env.VERSION_FILE }}
           add_options: '--force'
           create_branch: false
-          discussionCategory: Announcements
       -
         name: Remove tag
         run: |
@@ -59,6 +58,7 @@ jobs:
           tag: ${{ steps.tag_version.outputs.new_tag }}
           name: Release ${{ steps.tag_version.outputs.new_tag }}
           body: ${{ steps.tag_version.outputs.changelog }}      
+          discussionCategory: Announcements
 
   docker:
     runs-on: ubuntu-latest
