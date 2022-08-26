@@ -36,7 +36,7 @@ jobs:
         with:
           commit_message: ":rocket: Add Pipfile.lock, version.py for release `${{ github.ref_name }}` [ci skip]"
           branch: ${{ github.event.repository.default_branch }}
-          file_pattern: Pipfile.lock $VERSION_FILE
+          file_pattern: Pipfile.lock "${VERSION_FILE}"
           add_options: '--force'
           create_branch: false
       -
