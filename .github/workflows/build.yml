@@ -40,7 +40,7 @@ jobs:
       -
         name: Remove tag
         run: |
-          git tag --delete ${{ github.ref_name }}
+          git push --delete origin ${{ github.ref_name }}
       -
         name: Retag
         id: tag_version
@@ -48,6 +48,7 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           custom_tag: ${{ github.ref_name }}
+          tag_prefix: ""
       -
         name: Create a GitHub release
         uses: ncipollo/release-action@v1.10.0
