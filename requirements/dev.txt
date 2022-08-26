@@ -1,0 +1,9 @@
+-r common.txt
+autopep8
+ipykernel
+jupyter
+mypy
+pre-commit
+pytest
+pytest-cov
+pytest-xdist
