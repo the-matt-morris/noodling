@@ -26,7 +26,7 @@ jobs:
           pipenv lock
       -
         name: Version
-        run: \
+        run: |
           touch $VERSION_FILE
           echo "VERSION = '${{ github.ref_name }}'" > $VERSION_FILE
       -
