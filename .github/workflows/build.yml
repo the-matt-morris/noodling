@@ -28,7 +28,7 @@ jobs:
         name: Version
         run: |
           touch $VERSION_FILE
-          echo "VERSION = '${{ github.ref_name }}'" > $VERSION_FILE
+          echo "VERSION = '${{ github.ref_name:1 }}'" > $VERSION_FILE
       -
         name: Commit files
         uses: stefanzweifel/git-auto-commit-action@v4
