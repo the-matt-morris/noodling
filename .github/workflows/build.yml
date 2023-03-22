@@ -11,13 +11,16 @@ on:
 jobs:
   get_branch:
     runs-on: ubuntu-latest
+    outputs:
+      branch: ${{ steps.branch_name.outputs.branch }}
     steps:
       - name: Set branch name
+        id: branch_name
         run: |
           if [[ ${{ github.event_name }} == 'pull_request' ]]; then
-            echo "branch=test" >> $GITHUB_ENV
+            echo "branch=${{ github.head_ref }}" >> $GITHUB_OUTPUT
           else
-            echo "branch=dev" >> $GITHUB_ENV
+            echo "branch=dev" >> $GITHUB_OUTPUT
           fi
 
   commit:
@@ -28,7 +31,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          ref: ${{ env.branch }}
+          ref: ${{ needs.get_branch.outputs.branch }}
           
       - name: create empty file
         run: touch test.py
@@ -37,6 +40,6 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: "this is a test"
-          branch: ${{ env.branch }}
+          branch: ${{ needs.get_branch.outputs.branch }}
           file_pattern: test.py
           create_branch: false
