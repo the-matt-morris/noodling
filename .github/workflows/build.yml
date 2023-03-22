@@ -9,13 +9,24 @@ on:
       - ready_for_review
 
 jobs:
-  test:
+  get_branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set branch name
+        run: |
+          if [[ ${{ github.event_name }} == 'pull_request' ]]; then
+            echo "branch=${{ github.head_ref }}" >> $GITHUB_ENV
+          else
+            echo "branch=dev" >> $GITHUB_ENV
+          fi
+
+  commit:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          ref: ${{ github.ref_name }}
+          ref: ${{ env.branch }}
           
       - name: create empty file
         run: touch test.py
@@ -24,6 +35,6 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: "this is a test"
-          branch: ${{ github.ref_name }}
+          branch: ${{ env.branch }}
           file_pattern: test.py
           create_branch: false
