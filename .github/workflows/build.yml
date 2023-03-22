@@ -12,7 +12,18 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - name: test it
-        run: |
-          echo ${{ github.ref_name }}
-          echo ${{ github.head_ref }}
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.ref_name }}
+          
+      - name: create empty file
+        run: touch test.py
+        
+      - name: commit back
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "this is a test"
+          branch: ${{ github.ref_name }}
+          file_pattern: test.py
+          create_branch: false
